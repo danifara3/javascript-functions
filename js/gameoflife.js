@@ -8,7 +8,7 @@ function same([x, y], [j, k]) {
 
 // The game state to search for `cell` is passed as the `this` value of the function.
 function contains(cell) {
-  return this.some((c) => same(c, cell));
+  return this.some(c => same(c, cell));
 }
 
 const printCell = (cell, state) => {
@@ -19,34 +19,36 @@ const corners = (state = []) => {
   if (state.length === 0) {
     return {
       topRight: [0, 0],
-      bottomLeft: [0, 0],
+      bottomLeft: [0, 0]
     };
   }
+
   const xs = state.map(([x, _]) => x);
   const ys = state.map(([_, y]) => y);
   return {
     topRight: [Math.max(...xs), Math.max(...ys)],
-    bottomLeft: [Math.min(...xs), Math.min(...ys)],
+    bottomLeft: [Math.min(...xs), Math.min(...ys)]
   };
 };
 
-const printCells = (state) => {
-  const { bottomLeft, topRight } = corners(state);let accumulator = "";
-  for (let y=topRight[1]; y>=bottomLeft[1]; y--){
+const printCells = state => {
+  const { bottomLeft, topRight } = corners(state);
+  let accumulator = "";
+  for (let y = topRight[1]; y >= bottomLeft[1]; y--) {
     let row = [];
-    for (let x=bottomLeft[0]; x<=topRight[0]; x++){
-      row.push(printCell([x,y],state));
+    for (let x = bottomLeft[0]; x <= topRight[0]; x++) {
+      row.push(printCell([x, y], state));
     }
-    accumulator += row.join(" ") + "\n"
+    accumulator += row.join(" ") + "\n";
   }
   return accumulator;
 };
 
-const getNeighborsOf = ([x, y]) => {
-  [x-1,y+1], [x,y+1],[x+1,y+1],
-  [x-1,y],               [x+1,y],
-  [x-1,y-1], [x,y-1], [x+1, y-1]
-};
+const getNeighborsOf = ([x, y]) => [
+    [x-1, y+1], [x, y+1], [x+1, y+1],
+    [x-1, y],             [x+1, y],
+    [x-1, y-1], [x, y-1], [x+1, y-1]
+];
 
 const getLivingNeighbors = (cell, state) => {
   return getNeighborsOf(cell).filter(n => contains.bind(state)(n));
@@ -73,7 +75,7 @@ const calculateNext = (state) => {
 };
 
 const iterate = (state, iterations) => {
-  const states = [state];
+    const states = [state];
     for(let i = 0; i < iterations; i++) {
         states.push(calculateNext(states[states.length-1]));
     }
@@ -91,7 +93,7 @@ const startPatterns = {
     [2, 3],
     [3, 3],
     [3, 4],
-    [4, 4],
+    [4, 4]
   ],
   glider: [
     [-2, -2],
@@ -102,14 +104,14 @@ const startPatterns = {
     [2, 1],
     [3, 1],
     [3, 2],
-    [2, 3],
+    [2, 3]
   ],
   square: [
     [1, 1],
     [2, 1],
     [1, 2],
-    [2, 2],
-  ],
+    [2, 2]
+  ]
 };
 
 const [pattern, iterations] = process.argv.slice(2);
